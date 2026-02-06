@@ -3,160 +3,248 @@
 <head>
 <meta charset="UTF-8" />
 <title>Button Grid - JSPlay</title>
+
 <style>
   body {
     background: #121212;
     color: #eee;
     font-family: monospace;
+    margin: 0;
+    padding: 30px;
+    min-height: 100vh;
+    box-sizing: border-box;
     display: flex;
     flex-direction: column;
     align-items: center;
-    justify-content: flex-start;
-    height: 100vh;
-    margin: 0;
-    padding: 20px;
-    box-sizing: border-box;
   }
+
   #homeBtn {
-    max-width: 600px;
     width: 100%;
-    padding: 12px;
-    background: #00ff99;
-    border: none;
-    border-radius: 6px;
-    color: #121212;
-    font-weight: bold;
-    cursor: pointer;
-    font-size: 16px;
-    box-shadow: 0 0 10px #00ff99;
-    transition: background 0.3s;
-    margin-bottom: 20px;
-  }
-  #homeBtn:hover {
-    background: #00cc77;
-  }
-  #buttonGrid {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
-    gap: 15px;
-    max-width: 600px;
-    width: 100%;
-  }
-  .gridBtn {
-    padding: 15px 10px;
+    max-width: 900px;
+    padding: 16px;
+    font-size: 18px;
+    margin-bottom: 25px;
     background: #00ff99;
     border: none;
     border-radius: 8px;
-    color: #121212;
     font-weight: bold;
     cursor: pointer;
-    font-size: 16px;
-    box-shadow: 0 0 10px #00ff99;
-    transition: background 0.3s;
-    user-select: none;
+    box-shadow: 0 0 12px #00ff99;
   }
+
+  #buttonGrid {
+    width: 100%;
+    max-width: 900px;
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 20px;
+  }
+
+  .gridBtn {
+    padding: 22px;
+    font-size: 18px;
+    background: #00ff99;
+    border: none;
+    border-radius: 10px;
+    font-weight: bold;
+    cursor: pointer;
+    box-shadow: 0 0 12px #00ff99;
+  }
+
   .gridBtn:hover {
     background: #00cc77;
   }
 </style>
 </head>
+
 <body>
 
 <button id="homeBtn">Home</button>
-
 <div id="buttonGrid"></div>
 
 <script>
-  const homeBtn = document.getElementById('homeBtn');
-  const buttonGrid = document.getElementById('buttonGrid');
+const buttonGrid = document.getElementById("buttonGrid");
+document.getElementById("homeBtn").onclick = () => location.href = "../index.html";
 
-  homeBtn.addEventListener('click', () => {
-    window.location.href = '../index.html'; // Change this to your home page path
-  });
+/* ===== Utility ===== */
+function clearScreen(bg="#000") {
+  document.body.innerHTML = "";
+  document.body.style.margin = "0";
+  document.body.style.overflow = "hidden";
+  document.body.style.background = bg;
+}
 
-  function runDVDBounce() {
-    document.body.innerHTML = ''; // Clear everything to make the game fullscreen
-    document.body.style.margin = '0';
-    document.body.style.overflow = 'hidden';
-    document.body.style.background = '#000';
+function backButton() {
+  const btn = document.createElement("button");
+  btn.textContent = "← Back";
+  btn.style.position = "fixed";
+  btn.style.top = "15px";
+  btn.style.left = "15px";
+  btn.style.padding = "10px 16px";
+  btn.style.fontFamily = "monospace";
+  btn.style.fontSize = "16px";
+  btn.onclick = () => location.reload();
+  document.body.appendChild(btn);
+}
 
-    const c = document.createElement('canvas');
-    c.width = window.innerWidth;
-    c.height = window.innerHeight;
-    document.body.appendChild(c);
-    const ctx = c.getContext('2d');
+/* ===== DVD GAME (REAL CORNERS) ===== */
+function dvdGame() {
+  clearScreen("#000");
+  backButton();
 
-    let x = 100, y = 100;
-    let vx = 5, vy = 4;
-    let color = '#00ff99';
-    let count = 0;
-    let corner = 0;
+  const c = document.createElement("canvas");
+  document.body.appendChild(c);
+  const ctx = c.getContext("2d");
 
-    function randColor() {
-      return '#' + Math.floor(Math.random() * 16777215).toString(16).padStart(6, '0');
-    }
+  function resize() {
+    c.width = innerWidth;
+    c.height = innerHeight;
+  }
+  resize();
+  addEventListener("resize", resize);
 
-    function draw() {
-      ctx.clearRect(0, 0, c.width, c.height);
+  let x = 100, y = 100, vx = 4, vy = 3;
+  let bounces = 0, corners = 0;
+  let color = "#00ff99";
 
-      ctx.fillStyle = color;
-      ctx.font = '48px monospace';
-      ctx.fillText('DVD', x, y);
-
-      x += vx;
-      y += vy;
-
-      let bounced = false;
-      if (x + 80 > c.width || x < 0) {
-        vx = -vx;
-        bounced = true;
-      }
-      if (y > c.height || y - 48 < 0) {
-        vy = -vy;
-        bounced = true;
-      }
-      if (bounced) count++;
-
-      if ((x <= 0 || x + 80 >= c.width) && (y - 48 <= 0 || y >= c.height)) {
-        corner++;
-        color = randColor();
-      }
-
-      ctx.fillStyle = '#0f0';
-      ctx.font = '20px monospace';
-      ctx.fillText('Bounces: ' + count, 10, 30);
-      ctx.fillText('Corner Bounces: ' + corner, 10, 60);
-
-      requestAnimationFrame(draw);
-    }
-
-    draw();
-
-    window.addEventListener('resize', () => {
-      c.width = window.innerWidth;
-      c.height = window.innerHeight;
-    });
+  function randColor() {
+    return "#" + Math.floor(Math.random()*16777215).toString(16).padStart(6,"0");
   }
 
-  // Define your buttons here: label and onClick function
-  const buttons = [
-    { label: 'DVD Bouncing Counter', onClick: runDVDBounce },
-    { label: 'Play', onClick: () => alert('Play clicked!') },
-    { label: 'Settings', onClick: () => alert('Settings clicked!') },
-    { label: 'Help', onClick: () => alert('Help clicked!') },
-    { label: 'Profile', onClick: () => alert('Profile clicked!') },
-    // Add more buttons here:
-    // { label: 'New Button', onClick: () => { /* your code */ } },
-  ];
+  function loop() {
+    ctx.clearRect(0,0,c.width,c.height);
 
-  // Create buttons dynamically
-  buttons.forEach(({label, onClick}) => {
-    const btn = document.createElement('button');
-    btn.className = 'gridBtn';
-    btn.textContent = label;
-    btn.addEventListener('click', onClick);
-    buttonGrid.appendChild(btn);
-  });
+    ctx.font = "48px monospace";
+    const w = ctx.measureText("DVD").width;
+    const h = 48;
+
+    ctx.fillStyle = color;
+    ctx.fillText("DVD", x, y);
+
+    x += vx;
+    y += vy;
+
+    let hitX = false, hitY = false;
+
+    if (x <= 0 || x + w >= c.width) {
+      vx *= -1;
+      hitX = true;
+    }
+    if (y - h <= 0 || y >= c.height) {
+      vy *= -1;
+      hitY = true;
+    }
+
+    if (hitX || hitY) bounces++;
+    if (hitX && hitY) {
+      corners++;
+      color = randColor();
+    }
+
+    ctx.fillStyle = "#0f0";
+    ctx.font = "20px monospace";
+    ctx.fillText("Bounces: " + bounces, 20, 30);
+    ctx.fillText("Corner Hits: " + corners, 20, 55);
+
+    requestAnimationFrame(loop);
+  }
+  loop();
+}
+
+/* ===== CLICK SPEED ===== */
+function clickSpeed() {
+  clearScreen("#111");
+  backButton();
+
+  let clicks = 0;
+  const btn = document.createElement("button");
+  btn.textContent = "CLICK ME";
+  btn.style.fontSize = "40px";
+  btn.style.padding = "40px";
+  btn.onclick = () => clicks++;
+  document.body.appendChild(btn);
+
+  setTimeout(() => {
+    alert("Clicks in 5s: " + clicks);
+    location.reload();
+  }, 5000);
+}
+
+/* ===== REACTION TIME ===== */
+function reactionGame() {
+  clearScreen("#111");
+  backButton();
+
+  const box = document.createElement("div");
+  box.style.width = "200px";
+  box.style.height = "200px";
+  box.style.background = "red";
+  document.body.appendChild(box);
+
+  let start;
+  setTimeout(() => {
+    box.style.background = "lime";
+    start = performance.now();
+  }, Math.random()*3000 + 1000);
+
+  box.onclick = () => {
+    if (!start) return alert("Too early!");
+    alert("Reaction time: " + Math.round(performance.now() - start) + "ms");
+    location.reload();
+  };
+}
+
+/* ===== MOUSE DODGE ===== */
+function dodgeGame() {
+  clearScreen("#000");
+  backButton();
+
+  const enemy = document.createElement("div");
+  enemy.style.width = enemy.style.height = "60px";
+  enemy.style.background = "red";
+  enemy.style.position = "absolute";
+  document.body.appendChild(enemy);
+
+  function move() {
+    enemy.style.left = Math.random()*(innerWidth-60)+"px";
+    enemy.style.top = Math.random()*(innerHeight-60)+"px";
+  }
+
+  enemy.onmouseenter = () => {
+    alert("YOU LOST 💀");
+    location.reload();
+  };
+
+  setInterval(move, 700);
+}
+
+/* ===== COLOR CHAOS ===== */
+function colorChaos() {
+  clearScreen("#000");
+  backButton();
+
+  setInterval(() => {
+    document.body.style.background =
+      "#" + Math.floor(Math.random()*16777215).toString(16).padStart(6,"0");
+  }, 100);
+}
+
+/* ===== BUTTONS ===== */
+const buttons = [
+  { label: "DVD Bounce", onClick: dvdGame },
+  { label: "Click Speed Test", onClick: clickSpeed },
+  { label: "Reaction Time", onClick: reactionGame },
+  { label: "Mouse Dodge", onClick: dodgeGame },
+  { label: "Color Chaos", onClick: colorChaos }
+];
+
+buttons.forEach(b => {
+  const btn = document.createElement("button");
+  btn.className = "gridBtn";
+  btn.textContent = b.label;
+  btn.onclick = b.onClick;
+  buttonGrid.appendChild(btn);
+});
 </script>
 
 </body>
