@@ -1,1 +1,100 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<title>Button Grid - JSPlay</title>
+<style>
+  body {
+    background: #121212;
+    color: #eee;
+    font-family: monospace;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: flex-start;
+    height: 100vh;
+    margin: 0;
+    padding: 20px;
+    box-sizing: border-box;
+  }
+  #homeBtn {
+    max-width: 600px;
+    width: 100%;
+    padding: 12px;
+    background: #00ff99;
+    border: none;
+    border-radius: 6px;
+    color: #121212;
+    font-weight: bold;
+    cursor: pointer;
+    font-size: 16px;
+    box-shadow: 0 0 10px #00ff99;
+    transition: background 0.3s;
+    margin-bottom: 20px;
+  }
+  #homeBtn:hover {
+    background: #00cc77;
+  }
+  #buttonGrid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+    gap: 15px;
+    max-width: 600px;
+    width: 100%;
+  }
+  .gridBtn {
+    padding: 15px 10px;
+    background: #00ff99;
+    border: none;
+    border-radius: 8px;
+    color: #121212;
+    font-weight: bold;
+    cursor: pointer;
+    font-size: 16px;
+    box-shadow: 0 0 10px #00ff99;
+    transition: background 0.3s;
+    user-select: none;
+  }
+  .gridBtn:hover {
+    background: #00cc77;
+  }
+</style>
+</head>
+<body>
+
+<button id="homeBtn">Home</button>
+
+<div id="buttonGrid"></div>
+
+<script>
+  const homeBtn = document.getElementById('homeBtn');
+  const buttonGrid = document.getElementById('buttonGrid');
+
+  homeBtn.addEventListener('click', () => {
+    window.location.href = '../index.html'; // Change as needed
+  });
+
+  // Define your buttons here: label and onClick function
+  const buttons = [
+    { label: 'DVD Bouncing Counter', onClick: () => eval((()=>{document.body.style.margin='0';document.body.style.overflow='hidden';document.body.style.background='#000';const c=document.createElement('canvas');c.width=window.innerWidth;c.height=window.innerHeight;document.body.appendChild(c);const ctx=c.getContext('2d');let x=100,y=100,vx=5,vy=4,dx=5,dy=4,color='#00ff99',count=0,corner=0;function randColor(){return'#'+Math.floor(Math.random()*16777215).toString(16).padStart(6,'0')}function draw(){ctx.clearRect(0,0,c.width,c.height);ctx.fillStyle=color;ctx.font='48px monospace';ctx.fillText('DVD',x,y);x+=vx;y+=vy;let bounced=false;let hitCorner=false;if(x+80>c.width||x<0){vx=-vx;bounced=true}if(y>c.height||y-48<0){vy=-vy;bounced=true}if(bounced)count++;if((x<=0||x+80>=c.width)&&(y-48<=0||y>=c.height)){corner++;color=randColor()}ctx.fillStyle='#0f0';ctx.font='20px monospace';ctx.fillText('Bounces: '+count,10,30);ctx.fillText('Corner Bounces: '+corner,10,60);requestAnimationFrame(draw)}draw();window.addEventListener('resize',()=>{c.width=window.innerWidth;c.height=window.innerHeight})})();) },
+    { label: 'Play', onClick: () => alert('Play clicked!') },
+    { label: 'Settings', onClick: () => alert('Settings clicked!') },
+    { label: 'Help', onClick: () => alert('Help clicked!') },
+    { label: 'Profile', onClick: () => alert('Profile clicked!') },
+    // Add more buttons here:
+    // { label: 'New Button', onClick: () => { /* your code */ } },
+  ];
+
+  // Create buttons dynamically
+  buttons.forEach(({label, onClick}) => {
+    const btn = document.createElement('button');
+    btn.className = 'gridBtn';
+    btn.textContent = label;
+    btn.addEventListener('click', onClick);
+    buttonGrid.appendChild(btn);
+  });
+</script>
+
+</body>
+</html>
 
