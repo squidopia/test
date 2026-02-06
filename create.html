@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8" />
-<title>Eval with Named History + Delete</title>
+<title>Create - JSPlay</title>
 <style>
   body {
     background: #121212;
@@ -93,6 +93,26 @@
   #runBtn:hover {
     background: #00cc77;
   }
+
+    #homeBtn {
+    max-width: 600px;
+    width: 100%;
+    padding: 12px;
+    background: #00ff99;
+    border: none;
+    border-radius: 6px;
+    color: #121212;
+    font-weight: bold;
+    cursor: pointer;
+    font-size: 16px;
+    box-shadow: 0 0 10px #00ff99;
+    transition: background 0.3s;
+    margin-top: 15px;
+  }
+  #homeBtn:hover {
+    background: #00cc77;
+  }
+  
 </style>
 </head>
 <body>
@@ -155,7 +175,11 @@
       alert('Error: ' + err.message);
     }
   }
+  homeBtn.addEventListener('click', () => {
+    window.location.href = '../index.html';
+  });
 
+    
   runBtn.addEventListener('click', () => {
     const code = input.value.trim();
     if (!code) return alert('Please enter some JS code to run.');
