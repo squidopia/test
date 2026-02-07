@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Pong - JSPlay</title>
+<style>
+  body {
+    background: #121212;
+    color: #eee;
+    font-family: monospace;
+    margin: 0;
+    padding: 0;
+    height: 100vh;
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+  }
+  #homeBtn {
+    max-width: 600px;
+    width: 100%;
+    padding: 12px;
+    background: #00ff99;
+    border: none;
+    border-radius: 6px;
+    color: #121212;
+    font-weight: bold;
+    cursor: pointer;
+    font-size: 16px;
+    box-shadow: 0 0 10px #00ff99;
+    transition: background 0.3s;
+    margin: 15px auto 0 auto;
+    user-select: none;
+  }
+  #homeBtn:hover {
+    background: #00cc77;
+  }
+</style>
+</head>
+<body>
+
+<button id="homeBtn">Home</button>
+
+<script src="js/pong.js" defer></script>
+
+<script>
+  document.getElementById('homeBtn').addEventListener('click', () => {
+    window.location.href = 'play.html'; // Change path if your play.html is in a folder
+  });
+</script>
+
+</body>
+</html>
