@@ -24,7 +24,7 @@
   resize();
   window.addEventListener('resize', resize);
 
-  // Load state
+  // Load state from localStorage or default
   let state = JSON.parse(localStorage.getItem('dvdState')) || {
     x: 100,
     y: 100,
@@ -36,12 +36,16 @@
     lastUpdate: Date.now(),
   };
 
-  // Random color
+  // Generate random color in bright spectrum for visibility
   function randColor() {
-    return '#' + Math.floor(Math.random() * 16777215).toString(16).padStart(6, '0');
+    // Limit RGB to 100-255 range for bright colors
+    const r = 100 + Math.floor(Math.random() * 156);
+    const g = 100 + Math.floor(Math.random() * 156);
+    const b = 100 + Math.floor(Math.random() * 156);
+    return `rgb(${r},${g},${b})`;
   }
 
-  // Back button
+  // Back button setup
   const backBtn = document.createElement('button');
   backBtn.textContent = '← Back';
   Object.assign(backBtn.style, {
@@ -70,42 +74,54 @@
     window.location.href = './play.html';
   };
 
-  // DVD size
+  // DVD text dimensions
   const dvdWidth = 80;
   const dvdHeight = 48;
 
-  // ----- SIMULATION STEP (TIME-BASED) -----
+  // Add tiny random speed jitter on bounce
+  function jitterSpeed(speed) {
+    const jitter = (Math.random() - 0.5) * 1.5; // random between -0.75 and +0.75
+    return speed + jitter;
+  }
+
+  // Update simulation state
   function update() {
     state.x += state.vx;
     state.y += state.vy;
 
     let bounced = false;
 
+    // Bounce right wall
     if (state.x + dvdWidth > c.width) {
-      state.x = c.width - dvdWidth;
-      state.vx *= -1;
+      state.x = c.width - dvdWidth - 1; // tiny offset to avoid sticking
+      state.vx = -Math.abs(jitterSpeed(state.vx)); // ensure going left with jitter
       bounced = true;
-    } else if (state.x < 0) {
-      state.x = 0;
-      state.vx *= -1;
+    }
+    // Bounce left wall
+    else if (state.x < 0) {
+      state.x = 1; // tiny offset
+      state.vx = Math.abs(jitterSpeed(state.vx)); // ensure going right with jitter
       bounced = true;
     }
 
+    // Bounce bottom wall
     if (state.y > c.height) {
-      state.y = c.height;
-      state.vy *= -1;
+      state.y = c.height - 1; // tiny offset
+      state.vy = -Math.abs(jitterSpeed(state.vy)); // ensure going up with jitter
       bounced = true;
-    } else if (state.y - dvdHeight < 0) {
-      state.y = dvdHeight;
-      state.vy *= -1;
+    }
+    // Bounce top wall
+    else if (state.y - dvdHeight < 0) {
+      state.y = dvdHeight + 1; // tiny offset
+      state.vy = Math.abs(jitterSpeed(state.vy)); // ensure going down with jitter
       bounced = true;
     }
 
     if (bounced) {
       state.count++;
 
-      const onLR = (state.x === 0 || state.x === c.width - dvdWidth);
-      const onTB = (state.y === dvdHeight || state.y === c.height);
+      const onLR = (state.x === 1 || state.x === c.width - dvdWidth - 1);
+      const onTB = (state.y === dvdHeight + 1 || state.y === c.height - 1);
 
       if (onLR && onTB) {
         state.corner++;
@@ -114,7 +130,7 @@
     }
   }
 
-  // ----- RENDER -----
+  // Draw current frame
   function draw() {
     ctx.clearRect(0, 0, c.width, c.height);
 
@@ -128,7 +144,7 @@
     ctx.fillText('Corner Bounces: ' + state.corner, 10, 60);
   }
 
-  // ----- MAIN LOOP -----
+  // Main loop with time-based stepping
   function loop() {
     const now = Date.now();
     let elapsed = now - state.lastUpdate;
