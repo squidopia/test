@@ -24,12 +24,12 @@
   resize();
   window.addEventListener('resize', resize);
 
-  // Load or initialize state
+  // Load or initialize state with slower speed
   let state = JSON.parse(localStorage.getItem('dvdState')) || {
     x: 100,
     y: 100,
-    vx: 5,
-    vy: 4,
+    vx: 2.5, // slower horizontal speed
+    vy: 2,   // slower vertical speed
     color: '#00ff99',
     count: 0,
     corner: 0,
@@ -77,14 +77,14 @@
   const dvdWidth = 80;
   const dvdHeight = 48;
 
-  // Small random speed jitter on bounce
+  // Smaller random speed jitter on bounce to keep movement smoother
   function jitterSpeed(speed) {
-    const jitter = (Math.random() - 0.5) * 1.5; // -0.75 to +0.75
+    const jitter = (Math.random() - 0.5) * 0.5; // -0.25 to +0.25
     return speed + jitter;
   }
 
-  // Helper: check if a is near b within tolerance (default 3px)
-  function near(a, b, tolerance = 3) {
+  // Helper: check if a is near b within tolerance (bigger tolerance for easier corner detection)
+  function near(a, b, tolerance = 10) {
     return Math.abs(a - b) <= tolerance;
   }
 
