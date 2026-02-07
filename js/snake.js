@@ -74,7 +74,7 @@
     backBtn.style.opacity = '0.1';
   });
   backBtn.addEventListener('click', () => {
-    window.location.href = 'jsplay/play.html'; // change as needed
+    window.location.href = '/play.html'; // change as needed
   });
 
   // Load highscore
