@@ -28,8 +28,8 @@
   let state = JSON.parse(localStorage.getItem('dvdState')) || {
     x: 100,
     y: 100,
-    vx: 2.5, // slower horizontal speed
-    vy: 2,   // slower vertical speed
+    vx: 1.5, // slower horizontal speed
+    vy: 1.5,   // slower vertical speed
     color: '#00ff99',
     count: 0,
     corner: 0,
