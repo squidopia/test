@@ -1,53 +1,87 @@
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
 <meta charset="UTF-8" />
 <title>Falling Cubes - JSPlay</title>
 <style>
-  body {
-    background: #121212;
-    color: #eee;
-    font-family: monospace;
+  /* BODY SETUP */
+  html, body {
     margin: 0;
     padding: 0;
-    height: 100vh;
+    height: 100%;
     overflow: hidden;
+    font-family: monospace;
+    background: #121212;
+    color: #eee;
     display: flex;
+    justify-content: center;
+    align-items: center;
+  }
+
+  /* GAME CONTAINER */
+  #game-container {
+    position: relative;
+    width: 420px;
+    height: 600px;
+    background: #222;
+    border-radius: 14px;
+    overflow: hidden;
+    box-shadow: 0 0 30px #00ff99; /* green glow */
+  }
+
+  /* SCORE UI */
+  #score-ui {
+    margin-top: 10px;
+    text-align: center;
+    font-size: 18px;
+    color: #00ff99;
+  }
+
+  /* GAME OVER SCREEN */
+  #game-over {
+    position: absolute;
+    inset: 0;
+    display: none;
     flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    background: rgba(0,0,0,0.8);
+    font-size: 32px;
+    color: #ff5555;
+    text-shadow: 0 0 10px #ff0000;
   }
-  #homeBtn {
-    max-width: 600px;
-    width: 100%;
-    padding: 12px;
-    background: #00ff99;
-    border: none;
-    border-radius: 6px;
-    color: #121212;
+
+  #game-over button {
+    margin-top: 16px;
+    padding: 10px 20px;
+    font-size: 18px;
     font-weight: bold;
+    border: none;
+    border-radius: 10px;
+    background: #00ff99;
+    color: #000;
     cursor: pointer;
-    font-size: 16px;
-    box-shadow: 0 0 10px #00ff99;
-    transition: background 0.3s;
-    margin: 15px auto 0 auto;
-    user-select: none;
+    box-shadow: 0 0 15px #00ff99, 0 0 40px #00ff99;
+    transition: background 0.2s;
   }
-  #homeBtn:hover {
+
+  #game-over button:hover {
     background: #00cc77;
   }
 </style>
 </head>
 <body>
 
-<button id="homeBtn">Home</button>
+<div id="game-container">
+  <div id="score-ui"></div>
+  <div id="game-over">
+    <div>GAME OVER</div>
+    <button onclick="location.reload()">Restart</button>
+  </div>
+</div>
 
+<!-- GAME JS -->
 <script src="js/cubes.js" defer></script>
-
-<script>
-  document.getElementById('homeBtn').addEventListener('click', () => {
-    window.location.href = '/jsplay/play.html'; // Adjust path to your main menu
-  });
-</script>
 
 </body>
 </html>
