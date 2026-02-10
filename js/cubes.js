@@ -33,8 +33,8 @@
     let wrap = document.createElement("div");
     wrap.append(g, ui);
     g.append(p, over);
-    document.body.append(wrap);
 
+    // GAME VARIABLES
     let x = 180,
         score = 0,
         hs = +localStorage.fallHS || 0,
@@ -42,8 +42,10 @@
         spd = 3,
         keys = {};
 
-    // tweakable powerup spawn chance
-    const POWERUP_CHANCE = 0.05; // 8% chance, you can change this easily
+    // Tweakable spawn chances
+    const POWERUP_CHANCE = 0.06;      // rainbow rectangle
+    const RAINBOW_CIRCLE_CHANCE = 0.01; // rare slow circle
+    const MAX_SPEED_MULT = 1.6;       // max 60% faster
 
     onkeydown = e => keys[e.key] = 1;
     onkeyup = e => keys[e.key] = 0;
@@ -52,7 +54,7 @@
         return ax < bx + bw && ax + aw > bx && ay < by + bh && ay + ah > by;
     }
 
-    // Create red cube
+    // Create regular red cube
     function createCube() {
         let size = 40;
         let c = document.createElement("div");
@@ -61,7 +63,7 @@
         cubes.push({ e: c, x: parseFloat(c.style.left), y: -size, size, speed: spd, isPowerup: false });
     }
 
-    // Create rainbow powerup
+    // Create rainbow rectangle powerup
     function createPowerup() {
         let size = 30;
         let c = document.createElement("div");
@@ -70,10 +72,25 @@
         cubes.push({ e: c, x: parseFloat(c.style.left), y: -size, size, speed: spd * 0.6, scoreBonus: 10, isPowerup: true, hue: Math.random() * 360 });
     }
 
+    // Create super rare rainbow circle
+    function createRainbowCircle() {
+        let size = 20;
+        let c = document.createElement("div");
+        c.style = `position:absolute;width:${size}px;height:${size}px;left:${Math.random()*(420-size)}px;top:-${size}px;border-radius:50%;box-shadow:0 0 18px #fff`;
+        g.append(c);
+        cubes.push({ e: c, x: parseFloat(c.style.left), y: -size, size, speed: spd * 0.2, scoreBonus: 50, isPowerup: true, hue: Math.random() * 360, isCircle: true });
+    }
+
+    // Spawn cubes and powerups
     setInterval(() => {
         createCube();
-        if (Math.random() < POWERUP_CHANCE) createPowerup(); // tweakable powerup
+        if (Math.random() < POWERUP_CHANCE) createPowerup();
+        if (Math.random() < RAINBOW_CIRCLE_CHANCE) createRainbowCircle();
     }, 900);
+
+    // SPEED INCREASE OVER TIME
+    const speedIncreaseRate = 0.0005; // per frame
+    let speedMultiplier = 1;
 
     (function loop() {
         // Move player
@@ -82,10 +99,13 @@
         x = Math.max(0, Math.min(360, x));
         p.style.left = x + "px";
 
+        // Increase speed gradually
+        speedMultiplier = Math.min(MAX_SPEED_MULT, speedMultiplier + speedIncreaseRate);
+        
         // Move cubes
         for (let i = cubes.length - 1; i >= 0; i--) {
             let b = cubes[i];
-            b.y += b.speed;
+            b.y += b.speed * speedMultiplier;
             b.e.style.top = b.y + "px";
 
             // Rainbow powerup color shift
@@ -95,9 +115,9 @@
                 b.e.style.boxShadow = `0 0 18px hsl(${b.hue % 360}, 100%, 50%)`;
             }
 
-            // Collision with top of player only
-            let playerTop = 584; // top y of the rectangle
-            let playerBottom = 600; // bottom y (not used)
+            // Collision with top of board
+            let playerTop = 584;
+            let playerBottom = 600;
             if (b.y + b.size >= playerTop && b.y <= playerBottom && rectCollide(x, playerTop, 60, b.size, b.x, b.y, b.size, b.size)) {
                 if (b.isPowerup) {
                     score += b.scoreBonus;
